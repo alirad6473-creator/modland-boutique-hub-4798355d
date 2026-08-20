@@ -6,7 +6,7 @@ export function Price({
   size = "md",
 }: {
   price: number | string;
-  compareAt?: number | string | null;
+  compareAt?: number | string | null | undefined;
   size?: "sm" | "md" | "lg";
 }) {
   const off = discountPercent(price, compareAt);

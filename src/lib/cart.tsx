@@ -14,8 +14,8 @@ export type CartItem = {
   name: string;
   price: number;
   image: string | null;
-  size?: string;
-  color?: string;
+  size?: string | undefined;
+  color?: string | undefined;
   quantity: number;
   stock: number;
 };
