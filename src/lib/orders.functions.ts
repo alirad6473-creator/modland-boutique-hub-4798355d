@@ -126,7 +126,7 @@ export const getOrderPublic = createServerFn({ method: "POST" })
     const { data: order } = await supabaseAdmin
       .from("orders")
       .select(
-        "order_number, created_at, customer_name, phone, province, city, address, postal_code, note, items_total, shipping_cost, total, payment_status, order_status",
+        "id, order_number, created_at, customer_name, phone, province, city, address, postal_code, note, items_total, shipping_cost, total, payment_status, order_status",
       )
       .eq("order_number", data.orderNumber)
       .eq("phone", data.phone)
@@ -135,16 +135,7 @@ export const getOrderPublic = createServerFn({ method: "POST" })
     const { data: items } = await supabaseAdmin
       .from("order_items")
       .select("product_name, product_code, size, color, unit_price, quantity, line_total")
-      .eq(
-        "order_id",
-        (
-          await supabaseAdmin
-            .from("orders")
-            .select("id")
-            .eq("order_number", data.orderNumber)
-            .single()
-        ).data!.id,
-      );
+      .eq("order_id", order.id);
     return { ...order, items: items ?? [] };
   });
 
