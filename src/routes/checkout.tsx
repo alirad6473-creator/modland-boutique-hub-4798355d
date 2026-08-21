@@ -68,8 +68,8 @@ function Checkout() {
         },
       });
       clear();
-      if (result.payment?.redirectUrl) {
-        window.location.href = result.payment.redirectUrl;
+      if (result.payment.kind === "redirect") {
+        window.location.href = result.payment.url;
         return;
       }
       navigate({ to: "/order-success", search: { order: result.orderNumber } });

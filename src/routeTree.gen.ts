@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as OrderSuccessRouteImport } from './routes/order-success'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as TrackRouteImport } from './routes/track'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as ProductCodeRouteImport } from './routes/product.$code'
 
@@ -31,9 +33,19 @@ const CheckoutRoute = CheckoutRouteImport.update({
   path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrderSuccessRoute = OrderSuccessRouteImport.update({
+  id: '/order-success',
+  path: '/order-success',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrackRoute = TrackRouteImport.update({
+  id: '/track',
+  path: '/track',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
@@ -51,7 +63,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
+  '/order-success': typeof OrderSuccessRoute
   '/shop': typeof ShopRoute
+  '/track': typeof TrackRoute
   '/category/$slug': typeof CategorySlugRoute
   '/product/$code': typeof ProductCodeRoute
 }
@@ -59,7 +73,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
+  '/order-success': typeof OrderSuccessRoute
   '/shop': typeof ShopRoute
+  '/track': typeof TrackRoute
   '/category/$slug': typeof CategorySlugRoute
   '/product/$code': typeof ProductCodeRoute
 }
@@ -68,23 +84,41 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
+  '/order-success': typeof OrderSuccessRoute
   '/shop': typeof ShopRoute
+  '/track': typeof TrackRoute
   '/category/$slug': typeof CategorySlugRoute
   '/product/$code': typeof ProductCodeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/cart' | '/checkout' | '/shop' | '/category/$slug' | '/product/$code'
+    | '/'
+    | '/cart'
+    | '/checkout'
+    | '/order-success'
+    | '/shop'
+    | '/track'
+    | '/category/$slug'
+    | '/product/$code'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/cart' | '/checkout' | '/shop' | '/category/$slug' | '/product/$code'
+    | '/'
+    | '/cart'
+    | '/checkout'
+    | '/order-success'
+    | '/shop'
+    | '/track'
+    | '/category/$slug'
+    | '/product/$code'
   id:
     | '__root__'
     | '/'
     | '/cart'
     | '/checkout'
+    | '/order-success'
     | '/shop'
+    | '/track'
     | '/category/$slug'
     | '/product/$code'
   fileRoutesById: FileRoutesById
@@ -93,7 +127,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
+  OrderSuccessRoute: typeof OrderSuccessRoute
   ShopRoute: typeof ShopRoute
+  TrackRoute: typeof TrackRoute
   CategorySlugRoute: typeof CategorySlugRoute
   ProductCodeRoute: typeof ProductCodeRoute
 }
@@ -121,11 +157,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/order-success': {
+      id: '/order-success'
+      path: '/order-success'
+      fullPath: '/order-success'
+      preLoaderRoute: typeof OrderSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shop': {
       id: '/shop'
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/track': {
+      id: '/track'
+      path: '/track'
+      fullPath: '/track'
+      preLoaderRoute: typeof TrackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/category/$slug': {
@@ -149,7 +199,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
+  OrderSuccessRoute: OrderSuccessRoute,
   ShopRoute: ShopRoute,
+  TrackRoute: TrackRoute,
   CategorySlugRoute: CategorySlugRoute,
   ProductCodeRoute: ProductCodeRoute,
 }
