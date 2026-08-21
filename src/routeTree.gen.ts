@@ -15,6 +15,7 @@ import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as OrderSuccessRouteImport } from './routes/order-success'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as TrackRouteImport } from './routes/track'
+import { Route as WholesaleRouteImport } from './routes/wholesale'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as ProductCodeRouteImport } from './routes/product.$code'
 
@@ -48,6 +49,11 @@ const TrackRoute = TrackRouteImport.update({
   path: '/track',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WholesaleRoute = WholesaleRouteImport.update({
+  id: '/wholesale',
+  path: '/wholesale',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
   id: '/category/$slug',
   path: '/category/$slug',
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/order-success': typeof OrderSuccessRoute
   '/shop': typeof ShopRoute
   '/track': typeof TrackRoute
+  '/wholesale': typeof WholesaleRoute
   '/category/$slug': typeof CategorySlugRoute
   '/product/$code': typeof ProductCodeRoute
 }
@@ -76,6 +83,7 @@ export interface FileRoutesByTo {
   '/order-success': typeof OrderSuccessRoute
   '/shop': typeof ShopRoute
   '/track': typeof TrackRoute
+  '/wholesale': typeof WholesaleRoute
   '/category/$slug': typeof CategorySlugRoute
   '/product/$code': typeof ProductCodeRoute
 }
@@ -87,6 +95,7 @@ export interface FileRoutesById {
   '/order-success': typeof OrderSuccessRoute
   '/shop': typeof ShopRoute
   '/track': typeof TrackRoute
+  '/wholesale': typeof WholesaleRoute
   '/category/$slug': typeof CategorySlugRoute
   '/product/$code': typeof ProductCodeRoute
 }
@@ -99,6 +108,7 @@ export interface FileRouteTypes {
     | '/order-success'
     | '/shop'
     | '/track'
+    | '/wholesale'
     | '/category/$slug'
     | '/product/$code'
   fileRoutesByTo: FileRoutesByTo
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/order-success'
     | '/shop'
     | '/track'
+    | '/wholesale'
     | '/category/$slug'
     | '/product/$code'
   id:
@@ -119,6 +130,7 @@ export interface FileRouteTypes {
     | '/order-success'
     | '/shop'
     | '/track'
+    | '/wholesale'
     | '/category/$slug'
     | '/product/$code'
   fileRoutesById: FileRoutesById
@@ -130,6 +142,7 @@ export interface RootRouteChildren {
   OrderSuccessRoute: typeof OrderSuccessRoute
   ShopRoute: typeof ShopRoute
   TrackRoute: typeof TrackRoute
+  WholesaleRoute: typeof WholesaleRoute
   CategorySlugRoute: typeof CategorySlugRoute
   ProductCodeRoute: typeof ProductCodeRoute
 }
@@ -178,6 +191,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wholesale': {
+      id: '/wholesale'
+      path: '/wholesale'
+      fullPath: '/wholesale'
+      preLoaderRoute: typeof WholesaleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/category/$slug': {
       id: '/category/$slug'
       path: '/category/$slug'
@@ -202,6 +222,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrderSuccessRoute: OrderSuccessRoute,
   ShopRoute: ShopRoute,
   TrackRoute: TrackRoute,
+  WholesaleRoute: WholesaleRoute,
   CategorySlugRoute: CategorySlugRoute,
   ProductCodeRoute: ProductCodeRoute,
 }
