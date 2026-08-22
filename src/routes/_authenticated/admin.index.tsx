@@ -35,7 +35,7 @@ function AdminOrders() {
   };
 
   async function update(id: string, patch: Record<string, string>) {
-    const { error } = await supabase.from("orders").update(patch).eq("id", id);
+    const { error } = await supabase.from("orders").update(patch as never).eq("id", id);
     if (error) toast.error("به‌روزرسانی انجام نشد.");
     else {
       toast.success("به‌روزرسانی شد");
