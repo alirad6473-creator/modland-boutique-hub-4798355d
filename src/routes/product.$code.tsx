@@ -34,7 +34,8 @@ export const Route = createFileRoute("/product/$code")({
     if (!data.product) throw notFound();
     return data;
   },
-  head: ({ loaderData }) => {
+  head: ({ params, loaderData }) => {
+    const url = `/product/${params.code}`;
     if (!loaderData?.product) {
       return { meta: [{ title: "محصول یافت نشد | مد لند" }, { name: "robots", content: "noindex" }] };
     }
@@ -45,15 +46,73 @@ export const Route = createFileRoute("/product/$code")({
       { name: "description", content: desc },
       { property: "og:title", content: `${p.name} | مد لند` },
       { property: "og:description", content: desc },
-      { property: "og:type", content: "website" },
+      { property: "og:type", content: "product" },
+      { property: "og:url", content: url },
       { name: "twitter:card", content: "summary_large_image" },
     ];
     if (p.main_image_url?.startsWith("https://")) {
       meta.push({ property: "og:image", content: p.main_image_url });
       meta.push({ name: "twitter:image", content: p.main_image_url });
     }
-    return { meta };
+
+    const productLd: Record<string, unknown> = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: p.name,
+      sku: p.code,
+      description: desc,
+      ...(p.main_image_url ? { image: [p.main_image_url] } : {}),
+      ...(p.brand ? { brand: { "@type": "Brand", name: p.brand } } : {}),
+      ...(p.material ? { material: p.material } : {}),
+      ...(p.categories?.name ? { category: p.categories.name } : {}),
+      offers: {
+        "@type": "Offer",
+        price: Number(p.price),
+        priceCurrency: "IRR",
+        url,
+        availability:
+          (p.stock ?? 0) > 0
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock",
+        seller: { "@type": "Organization", name: "MOD LAND" },
+      },
+    };
+
+    const breadcrumbLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "خانه", item: "/" },
+        { "@type": "ListItem", position: 2, name: "فروشگاه", item: "/shop" },
+        ...(p.categories?.slug
+          ? [
+              {
+                "@type": "ListItem",
+                position: 3,
+                name: p.categories.name,
+                item: `/category/${p.categories.slug}`,
+              },
+            ]
+          : []),
+        {
+          "@type": "ListItem",
+          position: p.categories?.slug ? 4 : 3,
+          name: p.name,
+          item: url,
+        },
+      ],
+    };
+
+    return {
+      meta,
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        { type: "application/ld+json", children: JSON.stringify(productLd) },
+        { type: "application/ld+json", children: JSON.stringify(breadcrumbLd) },
+      ],
+    };
   },
+
   component: ProductPage,
 });
 
