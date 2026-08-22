@@ -69,7 +69,7 @@ function Home() {
         <div className="relative mx-auto flex min-h-[78vh] max-w-6xl flex-col justify-center px-4 py-24">
           <span className="text-xs tracking-[0.4em] text-muted-foreground">{BRAND}</span>
           <h1 className="brand-title mt-4 max-w-2xl text-4xl font-black leading-tight text-foreground sm:text-6xl">
-            استایل مردانه، ساده و بی‌نقص
+            استایل مردانه، شیک و بی‌نقص
           </h1>
           <p className="mt-5 max-w-xl text-sm leading-7 text-muted-foreground sm:text-base">
             بوتیک {BRAND_FA} در شهرکرد؛ مجموعه‌ای منتخب از شلوار، کاپشن، تیشرت، کتونی و اکسسوری
