@@ -103,8 +103,8 @@ function AdminProducts() {
     };
     setSaving(true);
     const { error } = editing
-      ? await supabase.from("products").update(payload).eq("id", editing.id)
-      : await supabase.from("products").insert(payload);
+      ? await supabase.from("products").update(payload as never).eq("id", editing.id)
+      : await supabase.from("products").insert(payload as never);
     setSaving(false);
     if (error) {
       toast.error("ذخیره محصول انجام نشد: " + error.message);

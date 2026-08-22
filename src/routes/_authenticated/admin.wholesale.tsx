@@ -73,8 +73,8 @@ function AdminWholesale() {
       is_active: fd.get("is_active") === "on",
     };
     const { error } = editing
-      ? await supabase.from("wholesale_products").update(payload).eq("id", editing.id)
-      : await supabase.from("wholesale_products").insert(payload);
+      ? await supabase.from("wholesale_products").update(payload as never).eq("id", editing.id)
+      : await supabase.from("wholesale_products").insert(payload as never);
     if (error) {
       toast.error("ذخیره انجام نشد: " + error.message);
       return;
