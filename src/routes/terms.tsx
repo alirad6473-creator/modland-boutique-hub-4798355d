@@ -8,7 +8,28 @@ export const Route = createFileRoute("/terms")({
       { property: "og:title", content: "قوانین و مقررات | مد لند" },
       { property: "og:description", content: "قوانین و مقررات خرید از فروشگاه اینترنتی مد لند." },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "/terms" },
       { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: "/terms" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          name: "قوانین و مقررات | مد لند",
+          url: "/terms",
+          isPartOf: { "@type": "WebSite", name: "MOD LAND", url: "/" },
+          breadcrumb: {
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "خانه", item: "/" },
+              { "@type": "ListItem", position: 2, name: "قوانین و مقررات", item: "/terms" },
+            ],
+          },
+        }),
+      },
     ],
   }),
   component: Page,

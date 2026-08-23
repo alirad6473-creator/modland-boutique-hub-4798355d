@@ -8,7 +8,28 @@ export const Route = createFileRoute("/privacy")({
       { property: "og:title", content: "حریم خصوصی | مد لند" },
       { property: "og:description", content: "سیاست حفظ حریم خصوصی و نگهداری اطلاعات مشتریان در فروشگاه مد لند." },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "/privacy" },
       { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: "/privacy" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          name: "حریم خصوصی | مد لند",
+          url: "/privacy",
+          isPartOf: { "@type": "WebSite", name: "MOD LAND", url: "/" },
+          breadcrumb: {
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "خانه", item: "/" },
+              { "@type": "ListItem", position: 2, name: "حریم خصوصی", item: "/privacy" },
+            ],
+          },
+        }),
+      },
     ],
   }),
   component: Page,

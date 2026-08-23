@@ -8,7 +8,28 @@ export const Route = createFileRoute("/returns")({
       { property: "og:title", content: "رویه بازگشت کالا | مد لند" },
       { property: "og:description", content: "شرایط تعویض و مرجوع کردن کالا در فروشگاه مد لند." },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "/returns" },
       { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: "/returns" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          name: "رویه بازگشت کالا | مد لند",
+          url: "/returns",
+          isPartOf: { "@type": "WebSite", name: "MOD LAND", url: "/" },
+          breadcrumb: {
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "خانه", item: "/" },
+              { "@type": "ListItem", position: 2, name: "رویه بازگشت کالا", item: "/returns" },
+            ],
+          },
+        }),
+      },
     ],
   }),
   component: Page,
