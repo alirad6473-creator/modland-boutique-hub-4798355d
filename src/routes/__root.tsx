@@ -83,7 +83,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "MOD LAND | فروشگاه پوشاک مردانه" },
+      { title: "سرزمین مد" },
       {
         name: "description",
         content: "مد لند، فروشگاه اینترنتی پوشاک و اکسسوری مردانه؛ شلوار، کاپشن، تیشرت، کتونی، کلاه.",

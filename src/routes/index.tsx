@@ -26,13 +26,13 @@ export const Route = createFileRoute("/")({
   loader: ({ context }) => context.queryClient.ensureQueryData(homeQuery),
   head: () => ({
     meta: [
-      { title: "مد لند | فروشگاه اینترنتی پوشاک مردانه MOD LAND" },
+      { title: "سرزمین مد" },
       {
         name: "description",
         content:
           "خرید آنلاین پوشاک مردانه از بوتیک مد لند شهرکرد؛ شلوار، کاپشن، تیشرت، کتونی و اکسسوری با ارسال به سراسر ایران و امکان خرید عمده.",
       },
-      { property: "og:title", content: "مد لند | فروشگاه پوشاک مردانه" },
+      { property: "og:title", content: "سرزمین مد" },
       {
         property: "og:description",
         content: "پوشاک مردانه شیک و باکیفیت، خرید تکی و عمده با ارسال سریع به سراسر ایران.",
