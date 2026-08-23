@@ -8,7 +8,28 @@ export const Route = createFileRoute("/shipping")({
       { property: "og:title", content: "شرایط ارسال | مد لند" },
       { property: "og:description", content: "زمان و هزینه ارسال سفارش‌های فروشگاه مد لند به سراسر ایران." },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "/shipping" },
       { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: "/shipping" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          name: "شرایط ارسال | مد لند",
+          url: "/shipping",
+          isPartOf: { "@type": "WebSite", name: "MOD LAND", url: "/" },
+          breadcrumb: {
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "خانه", item: "/" },
+              { "@type": "ListItem", position: 2, name: "شرایط ارسال", item: "/shipping" },
+            ],
+          },
+        }),
+      },
     ],
   }),
   component: Page,
