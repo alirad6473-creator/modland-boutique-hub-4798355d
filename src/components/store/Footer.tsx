@@ -61,7 +61,7 @@ export function Footer() {
           </p>
         </div>
       </div>
-      <div className="border-t border-border py-5 text-center text-xs text-muted-foreground">
+      <div className="border-t border-border pt-5 pb-24 text-center text-xs text-muted-foreground sm:pb-5">
         © {toFaDigits(new Date().getFullYear())} MOD LAND — تمامی حقوق محفوظ است.
       </div>
     </footer>
