@@ -89,11 +89,11 @@ function Home() {
       </section>
 
       <section className="border-y border-border bg-card/40">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-4 py-10 lg:grid-cols-4">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map((f) => (
             <div key={f.title} className="flex items-start gap-3">
               <f.icon className="mt-1 size-5 shrink-0 text-foreground" />
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm font-semibold text-foreground">{f.title}</p>
                 <p className="mt-1 text-xs text-muted-foreground">{f.desc}</p>
               </div>
