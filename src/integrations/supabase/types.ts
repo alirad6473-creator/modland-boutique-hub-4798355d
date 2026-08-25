@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          metadata: Json
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          metadata?: Json
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          metadata?: Json
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -263,6 +296,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      public_request_log: {
+        Row: {
+          action: string
+          created_at: string
+          fingerprint: string
+          id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          fingerprint: string
+          id?: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          fingerprint?: string
+          id?: string
+        }
+        Relationships: []
       }
       store_settings: {
         Row: {
