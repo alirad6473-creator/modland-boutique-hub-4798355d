@@ -88,8 +88,10 @@ export const cancelOrder = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!order) throw new Error("سفارش پیدا نشد.");
 
-    const patch: Record<string, string> = { order_status: "canceled" };
-    if (order.payment_status !== "paid") patch["payment_status"] = "canceled";
+    const patch =
+      order.payment_status === "paid"
+        ? { order_status: "canceled" }
+        : { order_status: "canceled", payment_status: "canceled" };
 
     const { error } = await admin.from("orders").update(patch).eq("id", data.orderId);
     if (error) throw new Error("لغو سفارش انجام نشد.");
