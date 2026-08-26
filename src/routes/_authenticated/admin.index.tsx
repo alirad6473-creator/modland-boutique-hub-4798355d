@@ -111,7 +111,15 @@ function AdminOrders() {
                     <select
                       className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
                       value={o.order_status}
-                      onChange={(e) => update(o.id, { order_status: e.target.value })}
+                      onChange={(e) =>
+                        run(
+                          () =>
+                            setStatus({
+                              data: { orderId: o.id, status: e.target.value as OrderStatus },
+                            }),
+                          "وضعیت سفارش به‌روزرسانی شد",
+                        )
+                      }
                     >
                       {Object.entries(ORDER_STATUSES).map(([k, v]) => (
                         <option key={k} value={k}>
@@ -120,20 +128,58 @@ function AdminOrders() {
                       ))}
                     </select>
                   </label>
-                  <label className="block text-xs text-muted-foreground">
-                    وضعیت پرداخت
-                    <select
-                      className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
-                      value={o.payment_status}
-                      onChange={(e) => update(o.id, { payment_status: e.target.value })}
-                    >
-                      {Object.entries(PAYMENT_STATUSES).map(([k, v]) => (
-                        <option key={k} value={k}>
-                          {v}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+
+                  <div className="space-y-2 rounded-md border border-border p-3">
+                    <p className="text-xs text-muted-foreground">
+                      وضعیت پرداخت:{" "}
+                      <span className="font-bold text-foreground">
+                        {PAYMENT_STATUSES[o.payment_status as keyof typeof PAYMENT_STATUSES] ??
+                          o.payment_status}
+                      </span>
+                    </p>
+                    <p className="text-[11px] leading-5 text-muted-foreground">
+                      وضعیت پرداخت فقط از طریق گردش‌کار سرور تغییر می‌کند و همه اقدام‌ها ثبت می‌شود.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() =>
+                          run(
+                            () => review({ data: { orderId: o.id, note: "" } }),
+                            "برای بررسی علامت‌گذاری شد",
+                          )
+                        }
+                      >
+                        بررسی پرداخت
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        disabled={o.payment_status === "paid"}
+                        onClick={() => {
+                          const reference = window.prompt("شماره پیگیری بانکی را وارد کنید:")?.trim();
+                          if (!reference || reference.length < 4) return;
+                          run(
+                            () => verify({ data: { orderId: o.id, reference, note: "" } }),
+                            "پرداخت به‌صورت دستی تایید و ثبت شد",
+                          );
+                        }}
+                      >
+                        تایید دستی پرداخت
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          if (!window.confirm("این سفارش لغو شود؟")) return;
+                          run(() => cancel({ data: { orderId: o.id, reason: "" } }), "سفارش لغو شد");
+                        }}
+                      >
+                        لغو سفارش
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </details>
