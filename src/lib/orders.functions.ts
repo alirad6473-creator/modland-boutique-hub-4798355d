@@ -163,6 +163,15 @@ export const submitWholesaleInquiry = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data }) => {
+    const { enforceRateLimit, requestFingerprint } = await import("./rate-limit.server");
+    await enforceRateLimit({
+      action: "wholesale_inquiry",
+      fingerprint: requestFingerprint(),
+      limit: 3,
+      windowSeconds: 3600,
+      message: "درخواست شما ثبت شده است. لطفاً بعداً دوباره تلاش کنید.",
+    });
+
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("wholesale_inquiries").insert({
       full_name: data.fullName,
