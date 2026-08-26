@@ -122,21 +122,30 @@ export const getOrderPublic = createServerFn({ method: "POST" })
     z.object({ orderNumber: z.string().trim().min(3).max(30), phone: phoneSchema }).parse(input),
   )
   .handler(async ({ data }) => {
+    const { enforceRateLimit, requestFingerprint } = await import("./rate-limit.server");
+    await enforceRateLimit({
+      action: "order_tracking",
+      fingerprint: requestFingerprint(),
+      limit: 10,
+      windowSeconds: 300,
+      message: "تعداد درخواست‌های پیگیری زیاد است. چند دقیقه دیگر تلاش کنید.",
+    });
+
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: order } = await supabaseAdmin
       .from("orders")
-      .select(
-        "id, order_number, created_at, customer_name, phone, province, city, address, postal_code, note, items_total, shipping_cost, total, payment_status, order_status",
-      )
+      // فقط حداقل اطلاعات لازم برای رهگیری برگردانده می‌شود (بدون آدرس، کدپستی و یادداشت)
+      .select("id, order_number, created_at, shipping_cost, total, payment_status, order_status")
       .eq("order_number", data.orderNumber)
       .eq("phone", data.phone)
       .maybeSingle();
     if (!order) return null;
     const { data: items } = await supabaseAdmin
       .from("order_items")
-      .select("product_name, product_code, size, color, unit_price, quantity, line_total")
+      .select("product_name, size, color, quantity, line_total")
       .eq("order_id", order.id);
-    return { ...order, items: items ?? [] };
+    const { id: _id, ...safeOrder } = order;
+    return { ...safeOrder, items: items ?? [] };
   });
 
 export const submitWholesaleInquiry = createServerFn({ method: "POST" })
@@ -154,6 +163,15 @@ export const submitWholesaleInquiry = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data }) => {
+    const { enforceRateLimit, requestFingerprint } = await import("./rate-limit.server");
+    await enforceRateLimit({
+      action: "wholesale_inquiry",
+      fingerprint: requestFingerprint(),
+      limit: 3,
+      windowSeconds: 3600,
+      message: "درخواست شما ثبت شده است. لطفاً بعداً دوباره تلاش کنید.",
+    });
+
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("wholesale_inquiries").insert({
       full_name: data.fullName,

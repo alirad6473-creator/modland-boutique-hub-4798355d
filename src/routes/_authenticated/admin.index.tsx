@@ -1,10 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 
 import { AdminShell } from "@/components/store/AdminShell";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { ORDER_STATUSES, PAYMENT_STATUSES } from "@/lib/constants";
+import {
+  cancelOrder,
+  markPaymentForReview,
+  updateOrderStatus,
+  verifyPaymentManually,
+} from "@/lib/admin.functions";
+import { ORDER_STATUSES, PAYMENT_STATUSES, type OrderStatus } from "@/lib/constants";
 import { formatDate, formatToman, toFaDigits } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
@@ -34,12 +42,18 @@ function AdminOrders() {
     open: (data ?? []).filter((o) => o.order_status === "new").length,
   };
 
-  async function update(id: string, patch: Record<string, string>) {
-    const { error } = await supabase.from("orders").update(patch as never).eq("id", id);
-    if (error) toast.error("به‌روزرسانی انجام نشد.");
-    else {
-      toast.success("به‌روزرسانی شد");
+  const setStatus = useServerFn(updateOrderStatus);
+  const cancel = useServerFn(cancelOrder);
+  const review = useServerFn(markPaymentForReview);
+  const verify = useServerFn(verifyPaymentManually);
+
+  async function run(fn: () => Promise<unknown>, okMessage: string) {
+    try {
+      await fn();
+      toast.success(okMessage);
       qc.invalidateQueries({ queryKey: ["admin-orders"] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "عملیات انجام نشد.");
     }
   }
 
@@ -97,7 +111,15 @@ function AdminOrders() {
                     <select
                       className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
                       value={o.order_status}
-                      onChange={(e) => update(o.id, { order_status: e.target.value })}
+                      onChange={(e) =>
+                        run(
+                          () =>
+                            setStatus({
+                              data: { orderId: o.id, status: e.target.value as OrderStatus },
+                            }),
+                          "وضعیت سفارش به‌روزرسانی شد",
+                        )
+                      }
                     >
                       {Object.entries(ORDER_STATUSES).map(([k, v]) => (
                         <option key={k} value={k}>
@@ -106,20 +128,58 @@ function AdminOrders() {
                       ))}
                     </select>
                   </label>
-                  <label className="block text-xs text-muted-foreground">
-                    وضعیت پرداخت
-                    <select
-                      className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
-                      value={o.payment_status}
-                      onChange={(e) => update(o.id, { payment_status: e.target.value })}
-                    >
-                      {Object.entries(PAYMENT_STATUSES).map(([k, v]) => (
-                        <option key={k} value={k}>
-                          {v}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+
+                  <div className="space-y-2 rounded-md border border-border p-3">
+                    <p className="text-xs text-muted-foreground">
+                      وضعیت پرداخت:{" "}
+                      <span className="font-bold text-foreground">
+                        {PAYMENT_STATUSES[o.payment_status as keyof typeof PAYMENT_STATUSES] ??
+                          o.payment_status}
+                      </span>
+                    </p>
+                    <p className="text-[11px] leading-5 text-muted-foreground">
+                      وضعیت پرداخت فقط از طریق گردش‌کار سرور تغییر می‌کند و همه اقدام‌ها ثبت می‌شود.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() =>
+                          run(
+                            () => review({ data: { orderId: o.id, note: "" } }),
+                            "برای بررسی علامت‌گذاری شد",
+                          )
+                        }
+                      >
+                        بررسی پرداخت
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        disabled={o.payment_status === "paid"}
+                        onClick={() => {
+                          const reference = window.prompt("شماره پیگیری بانکی را وارد کنید:")?.trim();
+                          if (!reference || reference.length < 4) return;
+                          run(
+                            () => verify({ data: { orderId: o.id, reference, note: "" } }),
+                            "پرداخت به‌صورت دستی تایید و ثبت شد",
+                          );
+                        }}
+                      >
+                        تایید دستی پرداخت
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          if (!window.confirm("این سفارش لغو شود؟")) return;
+                          run(() => cancel({ data: { orderId: o.id, reason: "" } }), "سفارش لغو شد");
+                        }}
+                      >
+                        لغو سفارش
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </details>
