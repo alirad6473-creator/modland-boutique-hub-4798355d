@@ -42,12 +42,18 @@ function AdminOrders() {
     open: (data ?? []).filter((o) => o.order_status === "new").length,
   };
 
-  async function update(id: string, patch: Record<string, string>) {
-    const { error } = await supabase.from("orders").update(patch as never).eq("id", id);
-    if (error) toast.error("به‌روزرسانی انجام نشد.");
-    else {
-      toast.success("به‌روزرسانی شد");
+  const setStatus = useServerFn(updateOrderStatus);
+  const cancel = useServerFn(cancelOrder);
+  const review = useServerFn(markPaymentForReview);
+  const verify = useServerFn(verifyPaymentManually);
+
+  async function run(fn: () => Promise<unknown>, okMessage: string) {
+    try {
+      await fn();
+      toast.success(okMessage);
       qc.invalidateQueries({ queryKey: ["admin-orders"] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "عملیات انجام نشد.");
     }
   }
 
